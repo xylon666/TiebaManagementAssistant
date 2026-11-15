@@ -19,8 +19,10 @@
 **方式一：直接用 exe（推荐给不装 Python 的电脑）**
 
 前往下载页下载 (https://github.com/xylon666/TiebaManagementAssistant/releases/tag/init)
-双击 `TiebaManagementAssistant.exe` → 浏览器自动打开页面 → 首次弹出设置面板，
-填写 **BDUSS** 和**目标贴吧**即可。程序关闭窗口即退出，配置和日志都留在 exe 同目录。
+
+双击 `TiebaManagementAssistant.exe` → 浏览器自动打开页面 → 首次弹出设置面板,填写 **BDUSS** 和**目标贴吧**即可。
+
+程序关闭窗口即退出，配置和日志都留在 exe 同目录。
 
 **方式二：从源码运行**
 
