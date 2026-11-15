@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>吧务管理 · QQ飞车吧</title>
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<div class="glow"></div>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3l7 3v5.5c0 4.3-2.9 7.9-7 9.5-4.1-1.6-7-5.2-7-9.5V6l7-3z"/>
+          <path d="M9.2 11.8l2 2 3.6-3.8"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>吧务管理</h1>
+        <p><span id="fnameLabel">QQ飞车吧</span><span class="dot">·</span><span id="dayHint">默认封禁 10 天</span></p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="pill" id="loginPill" title="登录状态">
+        <span class="status-dot"></span><span id="loginText">检查中…</span>
+      </div>
+      <button class="icon-btn" id="btnDiagnose" title="账号权限诊断">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12h3l2.5-6 4 13 2.5-7H21"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="btnSettings" title="设置">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="12" cy="12" r="3.2"/>
+          <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.56V21a2 2 0 1 1-4 0v-.08a1.7 1.7 0 0 0-1.1-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1H3a2 2 0 1 1 0-4h.08a1.7 1.7 0 0 0 1.56-1.1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.56V3a2 2 0 1 1 4 0v.08a1.7 1.7 0 0 0 1 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.56 1H21a2 2 0 1 1 0 4h-.08a1.7 1.7 0 0 0-1.52 1z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="grid">
+    <!-- 左：目标 + 操作 -->
+    <section class="card main-card">
+      <div class="card-head">
+        <h2>封禁目标</h2>
+        <span class="tag">用户名 或 UID</span>
+      </div>
+
+      <div class="search-row">
+        <div class="input-wrap">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>
+          </svg>
+          <input id="query" type="text" autocomplete="off" spellcheck="false"
+                 placeholder="输入用户名 / UID，回车查询" />
+        </div>
+        <button class="btn primary" id="btnResolve">查询</button>
+      </div>
+
+      <div class="memoryline">
+        <span id="memoryHint" class="muted">支持记忆最近操作的目标</span>
+        <button class="link-btn" id="btnForget" hidden>忘记</button>
+      </div>
+      <div class="chips" id="chips"></div>
+
+      <div class="target-slot" id="userBox">
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="8.5" r="3.6"/><path d="M4.5 20c.9-3.4 3.9-5.4 7.5-5.4s6.6 2 7.5 5.4" stroke-linecap="round"/>
+          </svg>
+          <p>还没有选中用户</p>
+        </div>
+      </div>
+
+      <div class="op-panel" id="opPanel">
+        <div class="field">
+          <label>封禁天数</label>
+          <div class="segmented" id="daySeg">
+            <button data-day="1">1 天</button>
+            <button data-day="3">3 天</button>
+            <button data-day="10" class="active">10 天</button>
+            <button data-day="custom">自定义</button>
+          </div>
+          <input id="customDay" class="mini-input" type="number" min="1" max="9999" value="10" hidden />
+        </div>
+
+        <div class="field">
+          <label for="reason">封禁理由</label>
+          <input id="reason" type="text" maxlength="60" placeholder="例如：违反吧规 / 恶意刷屏" />
+        </div>
+
+        <div class="actions">
+          <button class="btn danger" id="btnBan" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+              <circle cx="12" cy="12" r="8.2"/><path d="M6.2 6.2l11.6 11.6"/>
+            </svg>
+            <span id="banLabel">封禁 10 天</span>
+          </button>
+          <button class="btn ghost" id="btnUnban" disabled>解封</button>
+        </div>
+        <p class="fineprint">封禁为不可撤销操作（可解封），请确认目标无误后再提交。</p>
+      </div>
+    </section>
+
+    <!-- 右：申诉 / 封禁中 / 日志 -->
+    <aside class="side">
+      <section class="card">
+        <div class="card-head">
+          <h2>解封申诉<em class="count" id="appealCount" hidden></em></h2>
+          <button class="link-btn" id="btnRefreshAppeals">刷新</button>
+        </div>
+        <div class="select-bar" id="appealBar" hidden>
+          <div class="scope-group">
+            <button class="scope-btn" id="btnAppealAll" type="button" title="选中全部待处理申诉">全选</button>
+          </div>
+          <span class="sel-count" id="appealSelCount">已选 0 条</span>
+          <div class="sel-actions">
+            <button class="btn primary xs" id="btnAppealPass" disabled>通过</button>
+            <button class="btn ghost xs" id="btnAppealRefuse" disabled>驳回</button>
+          </div>
+        </div>
+        <div class="list appeal-list" id="appealList">
+          <p class="muted small">登录后会自动读取待处理的解封申诉</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2>封禁中<em class="count" id="blockCount" hidden></em></h2>
+          <button class="link-btn" id="btnRefreshBlocks">刷新</button>
+        </div>
+        <div class="select-bar" id="selectBar" hidden>
+          <div class="scope-group">
+            <button class="scope-btn" id="btnScopeAll" type="button" title="选中全部封禁用户（含其他页）">全选</button>
+            <button class="scope-btn" id="btnScopePage" type="button" title="只选中当前这一页的人">本页</button>
+          </div>
+          <span class="sel-count" id="selCount">已选 0 人</span>
+          <div class="sel-actions">
+            <button class="btn danger xs" id="btnBatchBan" disabled>封禁 10 天</button>
+            <button class="btn ghost xs" id="btnBatchUnban" disabled>解封</button>
+          </div>
+        </div>
+        <div class="list" id="blockList">
+          <p class="muted small">登录后会自动读取吧务后台的待解封列表</p>
+        </div>
+        <div class="pager" id="blockPager" hidden>
+          <button class="link-btn" id="btnPrevPage">‹ 上一页</button>
+          <span class="muted small" id="pageInfo"></span>
+          <button class="link-btn" id="btnNextPage">下一页 ›</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2>操作日志</h2>
+          <span class="muted small">本地记录</span>
+        </div>
+        <div class="list log-list" id="logList"></div>
+      </section>
+    </aside>
+  </main>
+</div>
+
+<!-- 设置 -->
+<div class="modal" id="settingsModal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>设置</h3>
+      <button class="icon-btn sm" data-close>✕</button>
+    </div>
+    <div class="modal-body">
+      <label class="fl">BDUSS<small>必填。浏览器登录贴吧后按 F12 → 应用 → Cookie → tieba.baidu.com，复制 BDUSS 的值</small></label>
+      <input id="setBduss" type="password" placeholder="留空表示不修改" autocomplete="off" />
+      <label class="fl">STOKEN<small>可选，一般留空即可</small></label>
+      <input id="setStoken" type="password" placeholder="留空表示不修改" autocomplete="off" />
+      <div class="two">
+        <div>
+          <label class="fl">目标贴吧<small>带不带「吧」都行</small></label>
+          <input id="setFname" type="text" placeholder="例如 QQ飞车" />
+        </div>
+        <div>
+          <label class="fl">默认封禁天数</label>
+          <input id="setDay" type="number" min="1" max="9999" value="10" />
+        </div>
+      </div>
+      <label class="fl">默认封禁理由</label>
+      <input id="setReason" type="text" maxlength="60" placeholder="违反吧规" />
+      <p class="fineprint">凭证和操作记录只保存在本机（程序同目录的 config.json 与 data 文件夹），不会上传到任何服务器。</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" data-close>取消</button>
+      <button class="btn primary" id="btnSaveSettings">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 二次确认 -->
+<div class="modal" id="confirmModal" hidden>
+  <div class="modal-card confirm">
+    <div class="modal-head">
+      <h3>确认封禁</h3>
+      <button class="icon-btn sm" data-close>✕</button>
+    </div>
+    <div class="modal-body" id="confirmBody"></div>
+    <div class="modal-foot">
+      <button class="btn ghost" data-close>取消</button>
+      <button class="btn danger" id="btnConfirmBan">确认封禁</button>
+    </div>
+  </div>
+</div>
+
+<!-- 账号诊断 -->
+<div class="modal" id="diagModal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>账号诊断</h3>
+      <button class="icon-btn sm" data-close>✕</button>
+    </div>
+    <div class="modal-body" id="diagBody">
+      <p class="muted small">检查中…</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" data-close>关闭</button>
+      <button class="btn primary" id="btnRunDiagnose">重新检查</button>
+    </div>
+  </div>
+</div>
+
+<!-- 批量操作确认 / 结果 -->
+<div class="modal" id="batchModal" hidden>
+  <div class="modal-card confirm">
+    <div class="modal-head">
+      <h3 id="batchTitle">确认批量封禁</h3>
+      <button class="icon-btn sm" data-close>✕</button>
+    </div>
+    <div class="modal-body" id="batchBody"></div>
+    <div class="modal-foot">
+      <button class="btn ghost" data-close id="btnBatchCancel">取消</button>
+      <button class="btn danger" id="btnBatchConfirm">确认</button>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<script src="/app.js"></script>
+</body>
+</html>
